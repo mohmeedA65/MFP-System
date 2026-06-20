@@ -317,11 +317,31 @@
         const calcMessage = document.getElementById('calcMessage');
         const receiptContainer = document.getElementById('receiptToDownload');
 
-        if (receiptIdInput) {
-            let nextId = localStorage.getItem('MFP_NextReceiptId');
-            receiptIdInput.value = (nextId && !isNaN(nextId)) ? parseInt(nextId) : 1001;
-        }
+       // ده السطر اللي كنت بتدور عليه، احنا هنضيفه دلوقتي
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwgHRehXApDPOb6nyv1WNhYoNOHCzL8bGoFGXV1RS6OVZG-OyeGdlbgU9_jLH0-bE-LaQ/exec';
 
+        async function getLiveReceiptId() {
+            if (!receiptIdInput) return;
+            receiptIdInput.value = "جاري الاتصال...";
+            receiptIdInput.style.color = "#e67e22"; 
+            try {
+                const response = await fetch(GAS_URL);
+                const data = await response.json();
+                if (data && data.nextReceiptId) {
+                    receiptIdInput.value = data.nextReceiptId;
+                    receiptIdInput.style.color = "#000"; 
+                    localStorage.setItem('MFP_Emergency_ID', data.nextReceiptId);
+                } else {
+                    throw new Error("السيرفر مبعتش رقم");
+                }
+            } catch (error) {
+                console.warn("أنت أوفلاين! تم تشغيل وضع الطوارئ:", error);
+                let emergencyId = localStorage.getItem('MFP_Emergency_ID') || 1001;
+                receiptIdInput.value = parseInt(emergencyId);
+                receiptIdInput.style.color = "#c0392b"; 
+            }
+        }
+        getLiveReceiptId();
         function parseNumberFromValue(val){
             if (typeof val === 'number') return isFinite(val) ? val : 0;
             if (!val) return 0;

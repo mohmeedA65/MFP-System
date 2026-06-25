@@ -397,11 +397,12 @@
             // الحسبة المطلوبة (باقي - طباعة)
             const netProfit = remainingNum - printCostNum;
 
-            const payload = {
+           const payload = {
                 receiptId: document.getElementById('receiptId')?.value || '',
                 clientName: document.getElementById('clientName')?.value || '',
                 phone: finalPhone,
                 occasion: document.getElementById('occasionType')?.value || '',
+                offer: document.getElementById('offerDetails')?.value || '',
                 eventDate: document.getElementById('eventDate')?.value || '',
                 location: document.getElementById('shootingLocation')?.value || '',
                 // --- التعديل هنا: نرسل أرقام صافية فقط للإكسيل ---
